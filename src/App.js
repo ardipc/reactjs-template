@@ -1,25 +1,37 @@
-import logo from './logo.svg';
+import React from 'react';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Public from './routes/Public';
+import Private from './routes/Private';
+
+class App extends React.Component {
+
+  state = {
+    token: localStorage.getItem('token')
+  }
+
+  changeRoute = (value) => {
+    this.setState({ token: value })
+
+    if(value) {
+      localStorage.setItem('token', value);
+    } else {
+      localStorage.clear();
+    }
+  }
+
+  render() {
+    const { token } = this.state;
+
+    const MainContent = ({token}) => token ?
+      <Private changeRoute={this.changeRoute} token={token} /> : <Public token={token} changeRoute={this.changeRoute} />;
+
+    return (
+      <MainContent token={token} />
+    )
+  }
 }
 
 export default App;
